@@ -83,13 +83,7 @@ export function _findIdAttributeFromFeature (feature) {
 export function responseToFeatureCollection (response, idAttribute) {
   var objectIdField;
   var features = response.features || response.results;
-  var count = features.length;
-
-  if (idAttribute) {
-    objectIdField = idAttribute;
-  } else {
-    objectIdField = _findIdAttributeFromResponse(response);
-  }
+  var count = features ? features.length : 0;
 
   var featureCollection = {
     type: 'FeatureCollection',
@@ -97,6 +91,11 @@ export function responseToFeatureCollection (response, idAttribute) {
   };
 
   if (count) {
+    if (idAttribute) {
+      objectIdField = idAttribute;
+    } else {
+      objectIdField = _findIdAttributeFromResponse(response);
+    }
     for (var i = features.length - 1; i >= 0; i--) {
       var feature = arcgisToGeoJSON(features[i], objectIdField || _findIdAttributeFromFeature(features[i]));
       featureCollection.features.push(feature);
