@@ -138,7 +138,7 @@ export var FeatureLayer = FeatureManager.extend({
   addLayers: function (ids) {
     for (var i = ids.length - 1; i >= 0; i--) {
       var layer = this._layers[ids[i]];
-      if (layer && (!this.options.timeField || this._featureWithinTimeRange(layer.feature))) {
+      if (this._map && layer && (!this.options.timeField || this._featureWithinTimeRange(layer.feature))) {
         this._map.addLayer(layer);
       }
     }
@@ -167,7 +167,7 @@ export var FeatureLayer = FeatureManager.extend({
         var cacheKey = this._cacheKey(coords);
         var cellKey = this._cellCoordsToKey(coords);
         var layers = this._cache[cacheKey];
-        if (this._activeCells[cellKey] && layers) {
+        if (this._map && this._activeCells[cellKey] && layers) {
           this.addLayers(layers);
         }
       }, this));
