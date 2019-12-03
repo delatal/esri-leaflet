@@ -366,8 +366,11 @@ export var FeatureManager = VirtualGrid.extend({
       var startTimes = this._startTimeIndex.between(start, end);
       var endTimes = this._endTimeIndex.between(start, end);
       search = startTimes.concat(endTimes);
-    } else {
+    } else if (this._timeIndex) {
       search = this._timeIndex.between(start, end);
+    } else {
+      warn('You must set timeField in the layer constructor in order to manipulate the start and end time filter.');
+      return [];
     }
 
     for (var i = search.length - 1; i >= 0; i--) {
@@ -426,7 +429,7 @@ export var FeatureManager = VirtualGrid.extend({
     if (this.options.timeField.start && this.options.timeField.end) {
       var startDate = +feature.properties[this.options.timeField.start];
       var endDate = +feature.properties[this.options.timeField.end];
-      return ((startDate >= from) && (startDate <= to)) || ((endDate >= from) && (endDate <= to));
+      return ((startDate >= from) && (startDate <= to)) || ((endDate >= from) && (endDate <= to)) || ((startDate <= from) && (endDate >= to));
     }
   },
 
