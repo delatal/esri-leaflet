@@ -166,7 +166,7 @@ export var FeatureManager = FeatureGrid.extend({
       }
 
       // no error, features
-      if (!error && featureCollection && featureCollection.features.length) {
+      if (!error && featureCollection && featureCollection.features && featureCollection.features.length) {
         // schedule adding features until the next animation frame
         Util.requestAnimFrame(
           Util.bind(function () {
@@ -177,7 +177,7 @@ export var FeatureManager = FeatureGrid.extend({
       }
 
       // no error, no features
-      if (!error && featureCollection && !featureCollection.features.length) {
+      if (!error && featureCollection && (!featureCollection.features || !featureCollection.features.length)) {
         this._postProcessFeatures(bounds);
       }
 
