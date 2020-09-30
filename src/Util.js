@@ -1,12 +1,12 @@
 import { latLng, latLngBounds, LatLng, LatLngBounds, Util, DomUtil, GeoJSON } from 'leaflet';
-import { request } from './Request';
+import { request, warn } from './Request';
 import { options } from './Options';
 import { Support } from './Support';
 
 import {
   geojsonToArcGIS as g2a,
   arcgisToGeoJSON as a2g
-} from '@esri/arcgis-to-geojson-utils';
+} from '@terraformer/arcgis';
 
 export function geojsonToArcGIS (geojson, idAttr) {
   return g2a(geojson, idAttr);
@@ -162,12 +162,6 @@ export function geojsonTypeToArcGIS (geoJsonType) {
   }
 
   return arcgisGeometryType;
-}
-
-export function warn () {
-  if (console && console.warn) {
-    console.warn.apply(console, arguments);
-  }
 }
 
 export function calcAttributionWidth (map) {
@@ -341,6 +335,9 @@ export function _updateMapAttribution (evt) {
     });
   }
 }
+
+// for backwards compatibility
+export { warn };
 
 export var EsriUtil = {
   warn: warn,
