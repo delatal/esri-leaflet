@@ -1,5 +1,5 @@
-/* esri-leaflet - v2.5.0 - Wed Sep 30 2020 20:49:41 GMT+0200 (Central European Summer Time)
- * Copyright (c) 2020 Environmental Systems Research Institute, Inc.
+/* esri-leaflet - v2.5.0 - Fri Apr 16 2021 15:30:30 GMT+0200 (Central European Summer Time)
+ * Copyright (c) 2021 Environmental Systems Research Institute, Inc.
  * Apache-2.0 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('leaflet')) :
@@ -112,41 +112,47 @@
     }
   }
 
-  function xmlHttpPost (url, params, callback, context, headers) {
+  function addOptions (httpRequest, options) {
+    httpRequest.timeout = options.timeout;
+    addHeaders(httpRequest, options.headers);
+    if (options.withCredentials) {
+      httpRequest.withCredentials = true;
+    }
+  }
+
+  function xmlHttpPost (url, params, callback, context) {
     var httpRequest = createRequest(callback, context);
     httpRequest.open('POST', url);
 
     if (typeof context !== 'undefined' && context !== null) {
       if (typeof context.options !== 'undefined') {
-        httpRequest.timeout = context.options.timeout;
+        addOptions(httpRequest, context.options);
       }
     }
 
-    addHeaders(httpRequest, headers);
     httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
     httpRequest.send(serialize(params));
 
     return httpRequest;
   }
 
-  function xmlHttpGet (url, params, callback, context, headers) {
+  function xmlHttpGet (url, params, callback, context) {
     var httpRequest = createRequest(callback, context);
     httpRequest.open('GET', url + '?' + serialize(params), true);
 
     if (typeof context !== 'undefined' && context !== null) {
       if (typeof context.options !== 'undefined') {
-        httpRequest.timeout = context.options.timeout;
+        addOptions(httpRequest, context.options);
       }
     }
 
-    addHeaders(httpRequest, headers);
     httpRequest.send(null);
 
     return httpRequest;
   }
 
   // AJAX handlers for CORS (modern browsers) or JSONP (older browsers)
-  function request (url, params, callback, context, headers) {
+  function request (url, params, callback, context) {
     var paramString = serialize(params);
     var httpRequest = createRequest(callback, context);
     var requestLength = (url + '?' + paramString).length;
@@ -159,11 +165,9 @@
       httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
     }
 
-    addHeaders(httpRequest, headers);
-
     if (typeof context !== 'undefined' && context !== null) {
       if (typeof context.options !== 'undefined') {
-        httpRequest.timeout = context.options.timeout;
+        addOptions(httpRequest, context.options);
       }
     }
 
@@ -1102,7 +1106,7 @@
         return Request.get.JSONP(url, params, callback, context);
       }
 
-      return Request[method](url, params, callback, context, this.options.headers);
+      return Request[method](url, params, callback, context);
     }
   });
 
@@ -1634,7 +1638,7 @@
         if ((method === 'get' || method === 'request') && !this.options.useCors) {
           return Request.get.JSONP(url, params, wrappedCallback, context);
         } else {
-          return Request[method](url, params, wrappedCallback, context, this.options.headers);
+          return Request[method](url, params, wrappedCallback, context);
         }
       }
     },
