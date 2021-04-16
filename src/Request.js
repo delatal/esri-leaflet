@@ -92,7 +92,7 @@ function addHeaders (httpRequest, headers) {
   }
 }
 
-function addOptions(httpRequest, options)  {
+function addOptions (httpRequest, options) {
   httpRequest.timeout = options.timeout;
   addHeaders(httpRequest, options.headers);
   if (options.withCredentials) {
