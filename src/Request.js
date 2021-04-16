@@ -92,41 +92,47 @@ function addHeaders (httpRequest, headers) {
   }
 }
 
-function xmlHttpPost (url, params, callback, context, headers) {
+function addOptions(httpRequest, options)  {
+  httpRequest.timeout = options.timeout;
+  addHeaders(httpRequest, options.headers);
+  if (options.withCredentials) {
+    httpRequest.withCredentials = true;
+  }
+}
+
+function xmlHttpPost (url, params, callback, context) {
   var httpRequest = createRequest(callback, context);
   httpRequest.open('POST', url);
 
   if (typeof context !== 'undefined' && context !== null) {
     if (typeof context.options !== 'undefined') {
-      httpRequest.timeout = context.options.timeout;
+      addOptions(httpRequest, context.options);
     }
   }
 
-  addHeaders(httpRequest, headers);
   httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
   httpRequest.send(serialize(params));
 
   return httpRequest;
 }
 
-function xmlHttpGet (url, params, callback, context, headers) {
+function xmlHttpGet (url, params, callback, context) {
   var httpRequest = createRequest(callback, context);
   httpRequest.open('GET', url + '?' + serialize(params), true);
 
   if (typeof context !== 'undefined' && context !== null) {
     if (typeof context.options !== 'undefined') {
-      httpRequest.timeout = context.options.timeout;
+      addOptions(httpRequest, context.options);
     }
   }
 
-  addHeaders(httpRequest, headers);
   httpRequest.send(null);
 
   return httpRequest;
 }
 
 // AJAX handlers for CORS (modern browsers) or JSONP (older browsers)
-export function request (url, params, callback, context, headers) {
+export function request (url, params, callback, context) {
   var paramString = serialize(params);
   var httpRequest = createRequest(callback, context);
   var requestLength = (url + '?' + paramString).length;
@@ -139,11 +145,9 @@ export function request (url, params, callback, context, headers) {
     httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
   }
 
-  addHeaders(httpRequest, headers);
-
   if (typeof context !== 'undefined' && context !== null) {
     if (typeof context.options !== 'undefined') {
-      httpRequest.timeout = context.options.timeout;
+      addOptions(httpRequest, context.options);
     }
   }
 
