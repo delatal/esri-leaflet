@@ -1,4 +1,4 @@
-/* esri-leaflet - v2.5.0 - Mon Apr 19 2021 16:27:58 GMT+0200 (Central European Summer Time)
+/* esri-leaflet - v2.5.1 - Mon Apr 19 2021 16:39:21 GMT+0200 (Central European Summer Time)
  * Copyright (c) 2021 Environmental Systems Research Institute, Inc.
  * Apache-2.0 */
 (function (global, factory) {
@@ -7,7 +7,7 @@
   (global = global || self, factory((global.L = global.L || {}, global.L.esri = {}), global.L));
 }(this, (function (exports, leaflet) { 'use strict';
 
-  var version = "2.5.0";
+  var version = "2.5.1";
 
   var cors = ((window.XMLHttpRequest && 'withCredentials' in new window.XMLHttpRequest()));
   var pointerEvents = document.documentElement.style.pointerEvents === '';
