@@ -5,7 +5,7 @@ var callbacks = 0;
 
 var overrides;
 
-function overrideRequests (o) {
+export function overrideRequests (o) {
   overrides = o;
 }
 
