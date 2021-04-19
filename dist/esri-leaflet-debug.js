@@ -1,4 +1,4 @@
-/* esri-leaflet - v2.5.0 - Fri Apr 16 2021 15:30:30 GMT+0200 (Central European Summer Time)
+/* esri-leaflet - v2.5.0 - Mon Apr 19 2021 16:27:58 GMT+0200 (Central European Summer Time)
  * Copyright (c) 2021 Environmental Systems Research Institute, Inc.
  * Apache-2.0 */
 (function (global, factory) {
@@ -22,6 +22,12 @@
   };
 
   var callbacks = 0;
+
+  var overrides;
+
+  function overrideRequests (o) {
+    overrides = o;
+  }
 
   function serialize (params) {
     var data = '';
@@ -121,6 +127,9 @@
   }
 
   function xmlHttpPost (url, params, callback, context) {
+    if (overrides && overrides.post) {
+      return overrides.post(url, serialize(params), callback, context);
+    }
     var httpRequest = createRequest(callback, context);
     httpRequest.open('POST', url);
 
@@ -137,6 +146,9 @@
   }
 
   function xmlHttpGet (url, params, callback, context) {
+    if (overrides && overrides.get) {
+      return overrides.get(url, serialize(params), callback, context);
+    }
     var httpRequest = createRequest(callback, context);
     httpRequest.open('GET', url + '?' + serialize(params), true);
 
@@ -153,6 +165,9 @@
 
   // AJAX handlers for CORS (modern browsers) or JSONP (older browsers)
   function request (url, params, callback, context) {
+    if (overrides && overrides.post) {
+      return overrides.post(url, serialize(params), callback, context);
+    }
     var paramString = serialize(params);
     var httpRequest = createRequest(callback, context);
     var requestLength = (url + '?' + paramString).length;
@@ -270,7 +285,8 @@
   var Request = {
     request: request,
     get: get,
-    post: xmlHttpPost
+    post: xmlHttpPost,
+    overrideRequests: overrideRequests
   };
 
   /* @preserve
@@ -4657,6 +4673,7 @@
   exports.imageService = imageService;
   exports.mapService = mapService;
   exports.options = options;
+  exports.overrideRequests = overrideRequests;
   exports.post = xmlHttpPost;
   exports.query = query;
   exports.request = request;
