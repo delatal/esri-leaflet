@@ -3,6 +3,12 @@ import { Support } from './Support';
 
 var callbacks = 0;
 
+var overrides;
+
+function overrideRequests (o) {
+  overrides = o;
+}
+
 function serialize (params) {
   var data = '';
 
@@ -101,6 +107,9 @@ function addOptions (httpRequest, options) {
 }
 
 function xmlHttpPost (url, params, callback, context) {
+  if (overrides && overrides.post) {
+    return overrides.post(url, serialize(params), callback, context);
+  }
   var httpRequest = createRequest(callback, context);
   httpRequest.open('POST', url);
 
@@ -117,6 +126,9 @@ function xmlHttpPost (url, params, callback, context) {
 }
 
 function xmlHttpGet (url, params, callback, context) {
+  if (overrides && overrides.get) {
+    return overrides.get(url, serialize(params), callback, context);
+  }
   var httpRequest = createRequest(callback, context);
   httpRequest.open('GET', url + '?' + serialize(params), true);
 
@@ -133,6 +145,9 @@ function xmlHttpGet (url, params, callback, context) {
 
 // AJAX handlers for CORS (modern browsers) or JSONP (older browsers)
 export function request (url, params, callback, context) {
+  if (overrides && overrides.post) {
+    return overrides.post(url, serialize(params), callback, context);
+  }
   var paramString = serialize(params);
   var httpRequest = createRequest(callback, context);
   var requestLength = (url + '?' + paramString).length;
@@ -256,7 +271,8 @@ export { xmlHttpPost as post };
 export var Request = {
   request: request,
   get: get,
-  post: xmlHttpPost
+  post: xmlHttpPost,
+  overrideRequests: overrideRequests
 };
 
 export default Request;
